@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  assetto-multiserver:
+    build: .
+    restart: always
+    stop_signal: SIGINT
+    ports:
+      # server manager web interface port
+      - 0.0.0.0:8772:8772
+
+      # be sure to add ports for each assetto corsa server instance here
+      - 0.0.0.0:9600:9600
+      - 0.0.0.0:9600:9600/udp
+      - 0.0.0.0:8081:8081
+    # set the entrypoint to either './server-manager' or './assetto-multiserver-manager'
+    entrypoint: ./assetto-multiserver-manager
+    volumes:
+      - ./servers.yml:/home/assetto/server-manager/servers.yml
+      - ./config.yml:/home/assetto/server-manager/config.yml
+      # note that the 'assetto' folder needs to exist and have the assetto server installed
+      - ./assetto:/home/assetto/server-manager/assetto
+      # note that the 'servers' folder needs to exist, e.g. `mkdir servers` before running docker-compose up
+      - ./servers:/home/assetto/server-manager/servers
+      # note that the 'shared_store.json' folder needs to exist, e.g. `mkdir shared_store.json` before running docker-compose up
+      - ./shared_store.json:/home/assetto/server-manager/shared_store.json
+      - ./ACSM.License:/home/assetto/server-manager/ACSM.License
+
